@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "orderNumber": "ORD-001",
+      "customer": "Alice Johnson",
+      "status": "Shipped",
+      "orderDate": "2024-03-10",
+      "total": 299.99
+    },
+    {
+      "id": 2,
+      "orderNumber": "ORD-002",
+      "customer": "Bob Wilson",
+      "status": "Pending",
+      "orderDate": "2024-03-18",
+      "total": 159.50
+    },
+    {
+      "id": 3,
+      "orderNumber": "ORD-003",
+      "customer": "Carol Davis",
+      "status": "Delivered",
+      "orderDate": "2024-02-28",
+      "total": 89.75
+    }
+  ]
+}

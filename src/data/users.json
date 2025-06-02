@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "Admin",
+      "createdAt": "2024-03-15",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "role": "User",
+      "createdAt": "2024-02-20",
+      "isActive": false
+    },
+    {
+      "id": 3,
+      "name": "Mike Johnson",
+      "email": "mike@example.com",
+      "role": "Manager",
+      "createdAt": "2024-01-10",
+      "isActive": true
+    }
+  ]
+}
