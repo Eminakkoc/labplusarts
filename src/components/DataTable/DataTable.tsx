@@ -35,12 +35,12 @@ function DataTable({ data, caption, loading }: Props) {
   const filters = useMemo(() => {
     const filters: Record<string, string> = {};
     searchParams.forEach((value, key) => {
-      if (key !== 'search') {
+      if (key !== 'search' && key !== 'dataSource') {
         filters[key] = value;
       }
     });
     return filters;
-  }, [searchParams]);
+  }, [searchParams, loading]);
 
   const filteredData = useMemo(() => {
     return data.filter((row) => {
@@ -50,24 +50,19 @@ function DataTable({ data, caption, loading }: Props) {
           const endDateRegex = /^.*-end$/;
           const exactDateRegex = /^.*-exact$/;
 
+          // begin,end and exact date filters
           if (beginDateRegex.test(key)) {
             const rowKey = key.replace('-begin', '');
-
-            // If the filter value is a date and the key ends with '-begin', we need to compare it with the row value
             const filterDate = new Date(value);
             const rowDate = new Date(String(row[rowKey] ?? ''));
             return rowDate >= filterDate;
           } else if (endDateRegex.test(key)) {
             const rowKey = key.replace('-end', '');
-
-            // If the filter value is a date and the key ends with '-end', we need to compare it with the row value
             const filterDate = new Date(value);
             const rowDate = new Date(String(row[rowKey] ?? ''));
             return rowDate <= filterDate;
           } else if (exactDateRegex.test(key)) {
             const rowKey = key.replace('-exact', '');
-
-            // If the filter value is a date and the key ends with '-exact', we need to compare it with the row value
             const filterDate = new Date(value);
             const rowDate = new Date(String(row[rowKey] ?? ''));
             return rowDate.getTime() === filterDate.getTime();
@@ -92,8 +87,9 @@ function DataTable({ data, caption, loading }: Props) {
 
   function getTableRow(row: Record<string, Primitive>): JSX.Element | undefined {
     const rowKey = Object.values(row).join('-');
+
     if (searchText) {
-      // If searchText is provided, filter rows based on it
+      // If searchTextValue is provided, filter rows based on it
       const rowValues = Object.values(row).map(String).join(' ').toLowerCase();
       if (!rowValues.includes(searchText.toLowerCase())) {
         return;
@@ -133,7 +129,7 @@ function DataTable({ data, caption, loading }: Props) {
             ))}
           </tr>
         </thead>
-        {!loading ? <tbody>{filteredData.map((row) => getTableRow(row))}</tbody> : null}
+        <tbody>{filteredData.map((row) => getTableRow(row))}</tbody>
       </table>
     </div>
   );

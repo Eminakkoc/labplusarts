@@ -32,7 +32,7 @@ function Search({ onSearchStart, onSearchEnd }: Props) {
       } finally {
         onSearchEnd?.();
       }
-    }, 1000); // Add a delay to avoid too many updates
+    }, 500); // Add a delay to avoid too many updates
     return () => {
       clearTimeout(handler);
       if (previousSearchText !== searchText) {

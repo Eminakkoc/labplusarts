@@ -13,23 +13,35 @@ interface Props {
 }
 
 function DataInput({ onDataSourceChange }: Props) {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [addedData, setAddedData] = useState<Record<string, DataTableValue>[] | undefined>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [dataStructure, setDataStructure] = useState<Record<string, DataTableValue>>({});
 
-  const [selectedDataIndex, setSelectedDataIndex] = useState<number>(0);
+  const [selectedDataIndex, setSelectedDataIndex] = useState<number>(
+    Number(searchParams.get('dataSource') ?? 0),
+  );
   const [customJson, setCustomJson] = useState<Record<string, DataTableValue>[]>([{}]);
   const previousSelectedIndex = usePrevious(selectedDataIndex);
 
   useEffect(() => {
     if (previousSelectedIndex !== undefined && previousSelectedIndex !== selectedDataIndex) {
       setAddedData(undefined); // Reset added data when switching data sources
-      setSearchParams({}, { replace: true });
+      const newSearchParams = new URLSearchParams();
+      newSearchParams.set('dataSource', selectedDataIndex.toString());
+
+      if (searchParams.get('search')) {
+        // Preserve the search parameter if it exists
+        newSearchParams.set('search', searchParams.get('search')!);
+      }
+
+      setSearchParams(newSearchParams, { replace: true });
     }
   }, [selectedDataIndex, previousSelectedIndex]);
 
   useEffect(() => {
+    console.log('selectedDataIndex changed to', selectedDataIndex);
     switch (selectedDataIndex) {
       case 0:
         let combinedUserData = [...users.data, ...(addedData ?? [])];
