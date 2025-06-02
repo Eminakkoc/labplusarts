@@ -1,7 +1,7 @@
 import { useMemo, type JSX } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { DataTableValue } from '../DataTable';
 import { isProbablyDateString } from '../../utils/date';
+import type { DataTableValue } from '../../types/dataTable';
 
 interface Props {
   data: Record<string, DataTableValue>[];

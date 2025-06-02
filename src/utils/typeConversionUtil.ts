@@ -1,4 +1,4 @@
-import type { DataTableValue } from '../components/DataTable';
+import type { DataTableValue } from '../types/dataTable';
 
 export type PrimitiveType = 'string' | 'number' | 'boolean' | 'null' | 'undefined';
 

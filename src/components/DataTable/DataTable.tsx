@@ -2,14 +2,13 @@ import { useMemo, type JSX } from 'react';
 import { capitalizeFirstLetter } from '../../utils/textUtil';
 import { useSearchParams } from 'react-router-dom';
 import { isProbablyDateString } from '../../utils/date';
+import type { DataTableValue } from '../../types/dataTable';
 
 interface Props {
-  data: Record<string, Primitive>[];
+  data: Record<string, DataTableValue>[];
   loading?: boolean;
   caption?: string;
 }
-
-type Primitive = string | number | boolean | null | undefined;
 
 function DataTable({ data, caption, loading }: Props) {
   const [searchParams] = useSearchParams();
@@ -85,7 +84,7 @@ function DataTable({ data, caption, loading }: Props) {
     });
   }, [data, filters]);
 
-  function getTableRow(row: Record<string, Primitive>): JSX.Element | undefined {
+  function getTableRow(row: Record<string, DataTableValue>): JSX.Element | undefined {
     const rowKey = Object.values(row).join('-');
 
     if (searchText) {
@@ -136,6 +135,3 @@ function DataTable({ data, caption, loading }: Props) {
 }
 
 export default DataTable;
-
-// I assume that only primitive values (except symbols) are used in the data table.
-export type { Primitive as DataTableValue };

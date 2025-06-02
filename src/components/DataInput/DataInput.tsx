@@ -3,10 +3,10 @@ import RadioSelector from '../RadioSelector';
 import orders from '../../data/orders.json';
 import users from '../../data/users.json';
 import CustomDataParser from '../CustomDataParser';
-import type { DataTableValue } from '../DataTable/DataTable';
 import { useSearchParams } from 'react-router-dom';
 import usePrevious from '../../utils/hooks/usePrevious';
 import AddDataModal from '../AddDataModal';
+import type { DataTableValue } from '../../types/dataTable';
 
 interface Props {
   onDataSourceChange: (newData: Record<string, DataTableValue>[]) => void;

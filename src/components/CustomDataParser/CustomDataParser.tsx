@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { DataTableValue } from '../DataTable';
+import type { DataTableValue } from '../../types/dataTable';
 
 interface Props {
   className?: string;

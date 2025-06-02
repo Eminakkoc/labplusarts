@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import DataInput from './components/DataInput';
 import DataTable from './components/DataTable';
-import type { DataTableValue } from './components/DataTable/DataTable';
 import Search from './components/Search';
 import Loading from './components/Loading';
 import Filter from './components/Filter';
+import type { DataTableValue } from './types/dataTable';
 
 function App() {
   const [tableData, setTableData] = useState<Record<string, DataTableValue>[]>([]);
