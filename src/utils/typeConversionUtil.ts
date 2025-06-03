@@ -27,16 +27,16 @@ export function convertStringToPrimitive(
       return value;
     case 'number': {
       const num = Number(value);
-      return isNaN(num) ? value : num;
+      return isNaN(num) ? undefined : num;
     }
     case 'boolean':
       if (value.toLowerCase() === 'true') return true;
       if (value.toLowerCase() === 'false') return false;
-      return value;
+      return undefined;
     case 'null':
-      return value === 'null' ? null : value;
+      return value === 'null' ? null : undefined;
     case 'undefined':
-      return value === 'undefined' ? undefined : value;
+      return value === 'undefined' ? undefined : undefined;
     default:
       return value;
   }

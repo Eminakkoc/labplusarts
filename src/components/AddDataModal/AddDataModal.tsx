@@ -31,12 +31,12 @@ const AddDataModal: React.FC<ModalProps> = ({ open, dataTemplate, onCancel, onOk
       setInvalidFields([]);
     }
   }, [open, previousOpen]);
+
   function addValue(key: string, value: DataTableValue): void {
     validateField(key, value);
     setAddedData((prev) => {
       const newData = { ...prev };
-      // Convert the value to the appropriate type based on the dataTemplate
-      newData[key] = convertStringToPrimitive(value + '', dataTemplate[key]);
+      newData[key] = value;
       return newData;
     });
   }
@@ -47,19 +47,19 @@ const AddDataModal: React.FC<ModalProps> = ({ open, dataTemplate, onCancel, onOk
     const isDate = isProbablyDateString(String(dataTemplate[dataKey] ?? ''));
 
     return (
-      <div key={dataKey} className="mb-4 flex items-center gap-2">
+      <div key={dataKey} className="relative mb-4 grid grid-cols-2 items-center gap-2">
         <label className="mb-2 block text-sm font-medium text-gray-700">
           {dataKey.charAt(0).toUpperCase() + dataKey.slice(1)}
         </label>
         <input
           type={isDate ? 'date' : 'text'}
-          className="h-[45px] w-full rounded border px-3 py-2 text-sm"
+          className="h-[45px] w-full max-w-[160px] rounded border px-3 py-2 text-sm"
           value={(addedData[dataKey] ?? '') + ''}
           onChange={(e) => addValue(dataKey, e.target.value)}
           onInput={(e) => addValue(dataKey, (e.target as HTMLInputElement).value)}
         />
         {invalidFields?.includes(dataKey) && (
-          <span className="text-xs text-red-500">Invalid value for this field.</span>
+          <span className="text-xxs absolute bottom-[0] left-[0] text-red-500">Invalid value.</span>
         )}
       </div>
     );
@@ -81,10 +81,10 @@ const AddDataModal: React.FC<ModalProps> = ({ open, dataTemplate, onCancel, onOk
     return invalid === false;
   }
 
-  function validateFields() {
+  function validateFields(data: Record<string, DataTableValue>) {
     const invalid: string[] = [];
     Object.keys(dataTemplate).forEach((key) => {
-      if (!validateField(key, addedData[key])) {
+      if (!validateField(key, data[key])) {
         invalid.push(key);
       }
     });
@@ -92,10 +92,19 @@ const AddDataModal: React.FC<ModalProps> = ({ open, dataTemplate, onCancel, onOk
   }
 
   function handleAddData() {
-    if (validateFields() && Object.keys(addedData).length) {
-      onOk(addedData);
+    if (Object.keys(addedData).length) {
+      const convertedData = { ...addedData };
+      // convert all values to their appropriate types
+      Object.keys(addedData).forEach((key) => {
+        convertedData[key] = convertStringToPrimitive(addedData[key] + '', dataTemplate[key]);
+      });
+
+      if (validateFields(convertedData)) {
+        onOk(addedData);
+      }
     }
   }
+
   return ReactDOM.createPortal(
     <div
       className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center"

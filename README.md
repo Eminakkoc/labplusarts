@@ -26,7 +26,7 @@ and npm version:
 
 I decided to use a data source component to get data arrays from predefined json files or from copy/pasted JSON arrays.
 
-> ⚠️ **Warning:** Changing selection between those options will reset all the filter, search and newly added data.
+> ⚠️ **Warning:** Changing selection between those options will reset all the filter and search data.
 
 Another component which is placed next to the data source component is "Filter" component, which deduces the filtering fields by iterating through all data elements and
 collect each of their fields to display corresponding input elements.
@@ -43,3 +43,5 @@ And lastly I have added a "Add new record" button which opens a modal and get in
 Because that I did not use a global state management tool, I have stored those data in Component states.
 
 Components which sets url (Filter/search) only updates the url and waits for DataTable component to read from the url and update itself. So this behavior seem slightly similar to dispatching actions and handled in the corresponding reducer.
+
+> **Component architecture:** All data are saved and provided by "DataInput" component internal state and moved up to parent component (App) via callback on every update. This data is sent to "DataTable" component via props by its parent (App) and consumes this data to display on a table.

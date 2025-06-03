@@ -68,7 +68,7 @@ function Filter({ data, onFilterStart, onFilterEnd }: Props) {
       // return input fields
       return (
         <div key={key} className="mb-4 flex flex-col gap-(--spacing-s)">
-          <div key={key} className="flex items-center gap-2">
+          <div key={key} className="flex items-center gap-2 max-md:flex-col max-md:items-start">
             <label className="mb-2 block text-sm font-medium text-gray-700">
               {key.charAt(0).toUpperCase() + key.slice(1)} (Between)
             </label>

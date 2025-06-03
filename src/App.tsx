@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div className="mediumGap mediumPadding mx-auto flex w-full flex-col justify-center max-lg:max-w-[100%] max-md:w-full max-md:max-w-[100%] lg:max-w-[1024px]">
-      <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+      <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
         <DataInput onDataSourceChange={setTableData} />
         <Filter data={tableData} />
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import RadioSelector from '../RadioSelector';
 import orders from '../../data/orders.json';
 import users from '../../data/users.json';
@@ -15,7 +15,12 @@ interface Props {
 function DataInput({ onDataSourceChange }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [addedData, setAddedData] = useState<Record<string, DataTableValue>[] | undefined>();
+  // data list for each data source
+  type ManuallyAddedDataAction =
+    | { type: 'reset'; payload: { dataIndex: number } }
+    | { type: 'add'; payload: { dataIndex: number; data: Record<string, DataTableValue> } };
+  const [manuallyAddeddData, dispatchManuallyAddedData] = useReducer(manuallyAddedDataReducer, []);
+
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [dataStructure, setDataStructure] = useState<Record<string, DataTableValue>>({});
 
@@ -27,7 +32,6 @@ function DataInput({ onDataSourceChange }: Props) {
 
   useEffect(() => {
     if (previousSelectedIndex !== undefined && previousSelectedIndex !== selectedDataIndex) {
-      setAddedData(undefined); // Reset added data when switching data sources
       const newSearchParams = new URLSearchParams();
       newSearchParams.set('dataSource', selectedDataIndex.toString());
 
@@ -41,20 +45,25 @@ function DataInput({ onDataSourceChange }: Props) {
   }, [selectedDataIndex, previousSelectedIndex]);
 
   useEffect(() => {
-    console.log('selectedDataIndex changed to', selectedDataIndex);
     switch (selectedDataIndex) {
       case 0:
-        let combinedUserData = [...users.data, ...(addedData ?? [])];
+        let combinedUserData = [...users.data, ...(manuallyAddeddData?.[selectedDataIndex] ?? [])];
         onDataSourceChange(combinedUserData);
         createAndSetDataStructure(combinedUserData);
         break;
       case 1:
-        let combinedOrderData = [...orders.data, ...(addedData ?? [])];
+        let combinedOrderData = [
+          ...orders.data,
+          ...(manuallyAddeddData?.[selectedDataIndex] ?? []),
+        ];
         onDataSourceChange(combinedOrderData);
         createAndSetDataStructure(combinedOrderData);
         break;
       case 2:
-        let combinedCustomData = [...customJson, ...(addedData ?? [])];
+        let combinedCustomData = [
+          ...customJson,
+          ...(manuallyAddeddData?.[selectedDataIndex] ?? []),
+        ];
         onDataSourceChange(combinedCustomData);
         createAndSetDataStructure(combinedCustomData);
 
@@ -62,7 +71,25 @@ function DataInput({ onDataSourceChange }: Props) {
       default:
         onDataSourceChange([]);
     }
-  }, [selectedDataIndex, customJson, addedData]);
+  }, [selectedDataIndex, customJson, manuallyAddeddData]);
+
+  function manuallyAddedDataReducer(
+    state: Record<string, DataTableValue>[][] | undefined,
+    action: ManuallyAddedDataAction,
+  ) {
+    switch (action.type) {
+      case 'add':
+        const { dataIndex, data } = action.payload;
+        const newData = [...(state?.[dataIndex] ?? []), data ?? {}];
+        const updatedAddedData = [...(state ?? [])];
+        updatedAddedData[dataIndex] = newData;
+        return updatedAddedData;
+      case 'reset':
+        return [];
+      default:
+        return state;
+    }
+  }
 
   function createAndSetDataStructure(data: Record<string, DataTableValue>[]) {
     const structure: Record<string, DataTableValue> = {};
@@ -105,7 +132,10 @@ function DataInput({ onDataSourceChange }: Props) {
         onCancel={() => setModalOpen(false)}
         onOk={(newAddedData: Record<string, DataTableValue>) => {
           // handle ok
-          setAddedData((prevAddedData) => [...(prevAddedData ?? []), newAddedData]);
+          dispatchManuallyAddedData({
+            type: 'add',
+            payload: { dataIndex: selectedDataIndex, data: newAddedData },
+          });
           setModalOpen(false);
         }}
       />
